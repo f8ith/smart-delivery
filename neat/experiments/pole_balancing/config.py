@@ -6,14 +6,20 @@ from neat.phenotype.feed_forward import FeedForwardNet
 
 
 class PoleBalanceConfig:
-    DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    DEVICE = torch.device(
+        "cuda:0"
+        if torch.cuda.is_available()
+        else "mps"
+        if torch.backends.mps.is_available()
+        else "cpu"
+    )
     VERBOSE = True
 
     NUM_INPUTS = 4
     NUM_OUTPUTS = 1
     USE_BIAS = True
 
-    ACTIVATION = 'sigmoid'
+    ACTIVATION = "sigmoid"
     SCALE_ACTIVATION = 4.9
 
     FITNESS_THRESHOLD = 100000.0
@@ -34,14 +40,14 @@ class PoleBalanceConfig:
 
     # Allow episode lengths of > than 200
     gym.envs.register(
-        id='LongCartPole-v0',
-        entry_point='gym.envs.classic_control:CartPoleEnv',
-        max_episode_steps=100000
+        id="LongCartPole-v0",
+        entry_point="gym.envs.classic_control:CartPoleEnv",
+        max_episode_steps=100000,
     )
 
     def fitness_fn(self, genome):
         # OpenAI Gym
-        env = gym.make('LongCartPole-v0')
+        env = gym.make("LongCartPole-v0")
         done = False
         observation = env.reset()
 

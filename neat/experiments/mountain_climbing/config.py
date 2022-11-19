@@ -5,14 +5,20 @@ from neat.phenotype.feed_forward import FeedForwardNet
 
 
 class MountainClimbConfig:
-    DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    DEVICE = torch.device(
+        "cuda:0"
+        if torch.cuda.is_available()
+        else "mps"
+        if torch.backends.mps.is_available()
+        else "cpu"
+    )
     VERBOSE = True
 
     NUM_INPUTS = 2
     NUM_OUTPUTS = 1
     USE_BIAS = True
 
-    ACTIVATION = 'tanh'
+    ACTIVATION = "tanh"
     SCALE_ACTIVATION = 4.9
 
     FITNESS_THRESHOLD = 90.0
@@ -33,7 +39,7 @@ class MountainClimbConfig:
 
     def fitness_fn(self, genome):
         # OpenAI Gym
-        env = gym.make('MountainCarContinuous-v0')
+        env = gym.make("MountainCarContinuous-v0")
         done = False
         observation = env.reset()
 
