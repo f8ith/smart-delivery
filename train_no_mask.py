@@ -1,21 +1,11 @@
 import gym
-
+import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
+from delivery_env import DeliveryEnv
 
-# Parallel environments
-env = make_vec_env("CartPole-v1", n_envs=4)
+env = make_vec_env(DeliveryEnv, n_envs=4)
 
-model = PPO("MlpPolicy", env, verbose=1)
-model.learn(total_timesteps=100)
-model.save("smart_delivery_no_mask")
-
-del model  # remove to demonstrate saving and loading
-
-model = PPO.load("ppo_cartpole")
-
-obs = env.reset()
-while True:
-    action, _states = model.predict(obs)
-    obs, rewards, dones, info = env.step(action)
-    env.render()
+model = PPO("MultiInputPolicy", env, verbose=1)
+model.learn(total_timesteps=1000)
+model.save("smart-delivery-no-mask")

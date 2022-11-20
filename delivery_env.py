@@ -276,11 +276,18 @@ class DeliveryEnv(gym.Env):
         )
 
         terminated = True if self.delivery_map[3, 2] == 0 else False
+
+        a_travel_distance = self.distance_map[a.pos[1], a.pos[0]][action[0]]
+        b_travel_distance = self.distance_map[b.pos[1], b.pos[0]][action[1]]
         a_time_elapsed = (
-            a.speed / self.distance_map[a.pos[1], a.pos[0]][action[0]] + a.ahead_time
+            (a.speed / a_travel_distance + a.ahead_time)
+            if a_travel_distance != 0
+            else a.ahead_time
         )
         b_time_elapsed = (
-            b.speed / self.distance_map[b.pos[1], b.pos[0]][action[1]] + b.ahead_time
+            (b.speed / b_travel_distance + b.ahead_time)
+            if b_travel_distance != 0
+            else b.ahead_time
         )
 
         time_difference = a_time_elapsed - b_time_elapsed

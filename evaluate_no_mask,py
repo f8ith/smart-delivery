@@ -1,0 +1,19 @@
+import gym
+import numpy as np
+from stable_baselines3 import PPO
+from stable_baselines3.common.env_util import make_vec_env
+from delivery_env import DeliveryEnv
+
+env = make_vec_env(DeliveryEnv, n_envs=4)
+
+model = PPO.load("ppo_cartpole")
+
+obs = env.reset()
+fitness = 0
+
+while True:
+    # Retrieve current action mask
+    action, _states = model.predict(obs)
+    obs, rewards, dones, info = env.step(action)
+    fitness += rewards
+    print(obs)
